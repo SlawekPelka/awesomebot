@@ -1,0 +1,13 @@
+{
+    "main": {
+        "bot": ""
+    },
+    "thirdparty": {
+        "mysql": {
+            "username": "",
+            "password": "",
+            "dbname": "",
+            "host": ""
+        }
+    }
+}

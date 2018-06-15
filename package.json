@@ -1,0 +1,16 @@
+{
+    "name": "tracersbooty",
+    "version": "1.0.0",
+    "description": "modular tracersbooty bot",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon main.js"
+    },
+    "author": "slawekpelka",
+    "license": "ISC",
+    "dependencies": {
+        "discord.js": "^11.3.2",
+        "mysql": "^2.15.0",
+        "nodemon": "^1.17.4"
+    }
+}
