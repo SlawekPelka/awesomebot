@@ -21,9 +21,11 @@ client.on('ready', () => {
         host: conntokens.host,
         user: conntokens.username,
         password: conntokens.password,
-        database: conntokens.dbname
+        database: conntokens.dbname,
+        insecureAuth: true
     });
     sqlApi.init();
+
 });
 
 client.on('message', msg => {
@@ -31,12 +33,12 @@ client.on('message', msg => {
 });
 
 client.on('guildCreate', guild => {
-    console.log(serverSetup.exists(guild.id).then(r => {
+    serverSetup.exists(guild.id).then(r => {
         if (r)
             return;
         else
             serverSetup.create(guild.id);
-    }));
+    })
 });
 
 client.on('messageReactionAdd', (msg, user) => {
