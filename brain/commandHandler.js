@@ -38,7 +38,7 @@ let cmdhandler = {
     },
     checkifcommandexists: commandname => {
         let possiblecommand = fetchApi.checkforaliases(commandname);
-        return (possiblecommand == 'none') ? false : true;
+        return (possiblecommand == undefined) ? false : true;
     },
     checkifadminonly: commandname => {
         return (fetchApi.checkifadminonly(commandname)) ? true : false;

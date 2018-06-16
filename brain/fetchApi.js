@@ -29,7 +29,8 @@ let fetch = {
         for (let x = 0; x < files.length; x++) {
             let getmeta = fetch.moduleMeta(files[x]);
             let aliases = getmeta.aliases.join(",");
-            return (aliases.includes(commandname)) ? files[x] : 'none';
+            if (aliases.includes(commandname))
+                return files[x];
         }
     }
 }
