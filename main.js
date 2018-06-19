@@ -24,8 +24,9 @@ client.on('ready', () => {
         database: conntokens.dbname,
         insecureAuth: true
     });
-    sqlApi.init();
 
+    sqlApi.init();
+    reactionManager.refillglobaloptinmessages();
 });
 
 client.on('message', msg => {
@@ -43,19 +44,23 @@ client.on('guildCreate', guild => {
 
 const events = {
     MESSAGE_REACTION_ADD: 'messageReactionAdd',
-    MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+    MESSAGE_REACTION_REMOVE: 'messageReactionRemove'
 };
 
 client.on('raw', async event => {
     // `event.t` is the raw event name
     if (!events.hasOwnProperty(event.t)) return;
+    var toemit = (event.t == 'MESSAGE_REACTION_ADD') ? 'messageReactionAdd' :
+        (event.t == 'MESSAGE_REACTION_REMOVE') ? 'messageReactionRemove' : null;
+    console.log(toemit);
+
 
     const { d: data } = event;
     const user = client.users.get(data.user_id);
     const channel = client.channels.get(data.channel_id) || await user.createDM();
 
     // if the message is already in the cache, don't re-emit the event
-    if (channel.messages.has(data.message_id)) return;
+    // if (channel.messages.has(data.message_id)) return;
 
     // if you're on the master/v12 branch, use `channel.messages.fetch()`
     const message = await channel.fetchMessage(data.message_id);
@@ -65,7 +70,7 @@ client.on('raw', async event => {
     const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
     const reaction = message.reactions.get(emojiKey);
 
-    client.emit(events[event.t], reaction, user);
+    client.emit(toemit, reaction, user);
 });
 
 client.on('messageReactionAdd', (msg, user) => {
@@ -73,6 +78,7 @@ client.on('messageReactionAdd', (msg, user) => {
 });
 
 client.on('messageReactionRemove', (msg, user) => {
+    console.log("ding");
     if (user.id != 455827368586772507 && msg._emoji.name == 'optin') reactionManager.removememberfromoptin(msg, user);
 });
 

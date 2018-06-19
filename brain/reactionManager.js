@@ -4,38 +4,31 @@ const sqlApi = require('./sqlApi');
 const util = require('./utilitychecker');
 
 let reactionmanager = {
+    refillglobaloptinmessages: () => {
+        sqlApi.get(`SELECT * from rankoptin`).then(res => {
+            res.forEach((v, i) => {
+                global.optinmessages.push([
+                    v.messageID,
+                    v.rankID
+                ]);
+            });
+        });
+    },
     addnewmembertooptin: (msg, user) => {
         let filtered;
-        if (global.optinmessages.length != 0) {
-            for (let x = 0; x < global.optinmessages.length; x++) {
-                if (global.optinmessages[x][0] == msg.message.id) filtered = global.optinmessages[x];
-            }
-
-            sqlApi.get(`SELECT * FROM rankoptin WHERE rankID = ${filtered[1]}`).then(res => {
-                if (res.length == 0) {
-                    sqlApi.query(`INSERT INTO rankoptin (rankID, serverID) VALUES (${filtered[1]}, ${msg.message.guild.id})`);
-                }
-                sqlApi.query(`INSERT INTO rankoptinpeople (roleID, userID, messageID) VALUES (${filtered[1]}, ${user.id}, ${msg.message.id})`);
-                let gmember = msg.message.guild.fetchMember(user).then(memb => {
-                    memb.addRole(util.getrolebyid(filtered[1], msg.message.guild)[0]);
-                });
-            });
-
-        } else {
-            sqlApi.get(`SELECT * FROM rankoptinpeople WHERE messageID = ${msg.message.id}`).then(realroleid => {
-                sqlApi.get(`SELECT * FROM rankoptin WHERE rankID = ${realroleid[0].roleID}`).then(res => {
-                    if (res.length == 0) {
-                        sqlApi.query(`INSERT INTO rankoptin (rankID, serverID) VALUES (${realroleid[0].roleID}, ${msg.message.guild.id})`);
-                    }
-                    sqlApi.query(`INSERT INTO rankoptinpeople (roleID, userID, messageID) VALUES (${realroleid[0].roleID}, ${user.id}, ${msg.message.id})`);
-                    let gmember = msg.message.guild.fetchMember(user).then(memb => {
-                        memb.addRole(util.getrolebyid(realroleid[0].roleID, msg.message.guild)[0]);
-                    });
-                });
-            });
+        for (let x = 0; x < global.optinmessages.length; x++) {
+            if (global.optinmessages[x][0] == msg.message.id) filtered = global.optinmessages[x];
         }
 
-
+        sqlApi.get(`SELECT * FROM rankoptin WHERE rankID = ${filtered[1]}`).then(res => {
+            if (res.length == 0) {
+                sqlApi.query(`INSERT INTO rankoptin (rankID, serverID) VALUES (${filtered[1]}, ${msg.message.guild.id})`);
+            }
+            sqlApi.query(`INSERT INTO rankoptinpeople (roleID, userID, messageID) VALUES (${filtered[1]}, ${user.id}, ${msg.message.id})`);
+            let gmember = msg.message.guild.fetchMember(user).then(memb => {
+                memb.addRole(util.getrolebyid(filtered[1], msg.message.guild)[0]);
+            });
+        });
     },
     removememberfromoptin: (msg, user) => {
         sqlApi.get(`SELECT roleID FROM rankoptinpeople WHERE messageID = ${msg.message.id}`).then(result => {
