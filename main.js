@@ -62,8 +62,10 @@ client.on('raw', async event => {
     // if the message is already in the cache, don't re-emit the event
     // if (channel.messages.has(data.message_id)) return;
 
+
     // if you're on the master/v12 branch, use `channel.messages.fetch()`
     const message = await channel.fetchMessage(data.message_id);
+    if (message && message.reactions.size && message.reactions.first().users.size) return;
 
     // custom emojis reactions are keyed in a `name:ID` format, while unicode emojis are keyed by names
     // if you're on the master/v12 branch, custom emojis reactions are keyed by their ID
