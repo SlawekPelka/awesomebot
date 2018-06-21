@@ -48,31 +48,29 @@ const events = {
 };
 
 client.on('raw', async event => {
-    // `event.t` is the raw event name
     if (!events.hasOwnProperty(event.t)) return;
-    var toemit = (event.t == 'MESSAGE_REACTION_ADD') ? 'messageReactionAdd' :
-        (event.t == 'MESSAGE_REACTION_REMOVE') ? 'messageReactionRemove' : null;
-    console.log(toemit);
-
 
     const { d: data } = event;
     const user = client.users.get(data.user_id);
     const channel = client.channels.get(data.channel_id) || await user.createDM();
+    let message = channel.messages.get(data.message_id);
 
-    // if the message is already in the cache, don't re-emit the event
-    // if (channel.messages.has(data.message_id)) return;
-
-
-    // if you're on the master/v12 branch, use `channel.messages.fetch()`
-    const message = await channel.fetchMessage(data.message_id);
-    if (message && message.reactions.size && message.reactions.first().users.size) return;
-
-    // custom emojis reactions are keyed in a `name:ID` format, while unicode emojis are keyed by names
-    // if you're on the master/v12 branch, custom emojis reactions are keyed by their ID
     const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-    const reaction = message.reactions.get(emojiKey);
 
-    client.emit(toemit, reaction, user);
+    if (event.t === 'MESSAGE_REACTION_REMOVE' && message && message.reactions.get(emojiKey) && message.reactions.get(emojiKey).users.size) return;
+    if (event.t === 'MESSAGE_REACTION_ADD' && message) return;
+
+    if (!message) {
+        message = await channel.fetchMessage(data.message_id);
+    }
+    let reaction = message.reactions.get(emojiKey);
+
+    if (!reaction) {
+        const emoji = new Discord.Emoji(client.guilds.get(data.guild_id), data.emoji);
+        reaction = new Discord.MessageReaction(message, emoji, 1, data.user_id === client.user.id);
+    }
+
+    client.emit(events[event.t], reaction, user);
 });
 
 client.on('messageReactionAdd', (msg, user) => {

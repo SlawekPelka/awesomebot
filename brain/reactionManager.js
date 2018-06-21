@@ -22,9 +22,9 @@ let reactionmanager = {
 
         sqlApi.get(`SELECT * FROM rankoptin WHERE rankID = ${filtered[1]}`).then(res => {
             if (res.length == 0) {
-                sqlApi.query(`INSERT INTO rankoptin (rankID, serverID) VALUES (${filtered[1]}, ${msg.message.guild.id})`);
+                sqlApi.query(`INSERT INTO rankoptinpeople (roleID, userID, messageID) VALUES (${filtered[1]}, ${user.id}, ${msg.message.id})`);
             }
-            sqlApi.query(`INSERT INTO rankoptinpeople (roleID, userID, messageID) VALUES (${filtered[1]}, ${user.id}, ${msg.message.id})`);
+
             let gmember = msg.message.guild.fetchMember(user).then(memb => {
                 memb.addRole(util.getrolebyid(filtered[1], msg.message.guild)[0]);
             });
