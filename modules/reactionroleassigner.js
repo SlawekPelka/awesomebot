@@ -41,7 +41,7 @@ let cmd = {
                 global.optinmessages.push([
                     msg.id,
                     util.getroleid(message.guild, rolename)
-                ])
+                ]);
                 msg.react(optinmoji);
             });
         }
