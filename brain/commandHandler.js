@@ -8,8 +8,9 @@ const moduleMain = path.join(__dirname, '../modules');
 let cmdhandler = {
     handle: msg => {
         cmdhandler.checkifprefixed(msg.guild.id, msg.content).then(prefres => {
-            if (!prefres) return;
-            let cmdname = msg.content.replace('?!', '').split(' ')[0];
+            if (prefres == '') return;
+
+            let cmdname = msg.content.replace(prefres, '').split(' ')[0];
 
             if (!cmdhandler.checkifcommandexists(cmdname)) {
                 msg.reply("That command doesn't seem to be active or to exist!");
@@ -32,7 +33,7 @@ let cmdhandler = {
     checkifprefixed: (guildid, commandcontent) => {
         return new Promise((resolve, reject) => {
             sqlApi.get(`SELECT prefix from guilds where serverID = ${guildid}`).then(pref => {
-                resolve((commandcontent.startsWith(pref[0].prefix)) ? true : false);
+                resolve((commandcontent.startsWith(pref[0].prefix)) ? pref[0].prefix : '');
             });
         });
     },

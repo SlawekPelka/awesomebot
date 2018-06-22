@@ -74,12 +74,21 @@ client.on('raw', async event => {
 });
 
 client.on('messageReactionAdd', (msg, user) => {
-    if (user.id != 455827368586772507 && msg._emoji.name == 'optin') reactionManager.addnewmembertooptin(msg, user);
+    if (user.id = 455827368586772507) return;
+    switch (msg._emoji.name) {
+        case 'optin':
+            reactionManager.addnewmembertooptin(msg, user);
+            break;
+    }
 });
 
 client.on('messageReactionRemove', (msg, user) => {
-    console.log("ding");
-    if (user.id != 455827368586772507 && msg._emoji.name == 'optin') reactionManager.removememberfromoptin(msg, user);
+    if (user.id = 455827368586772507) return;
+    switch (msg._emoji.name) {
+        case 'optin':
+            reactionManager.removememberfromoptin(msg, user);
+            break;
+    }
 });
 
 client.login(fileApi.tokens("bot"));

@@ -4,8 +4,9 @@ let cmd = {
     exec: (message, args) => {
         args = args.splice(1, args.length);
         let rolename = args.join(' ');
+        let whitespaceTest = new RegExp(/\s+/g);
 
-        if (rolename == undefined) {
+        if (whitespaceTest.test(rolename) || rolename == '') {
             message.reply("You need to specify the role!");
             return;
         }
@@ -41,7 +42,7 @@ let cmd = {
                 global.optinmessages.push([
                     msg.id,
                     util.getroleid(message.guild, rolename)
-                ])
+                ]);
                 msg.react(optinmoji);
             });
         }
