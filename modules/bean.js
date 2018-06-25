@@ -12,10 +12,11 @@ let cmd = {
         let ownerId = message.guild.owner.id;
         let mentionedUser = message.mentions.users.first();
         let guildUser = message.guild.members.get(mentionedUser.id);
+        let originUsername = guildUser.nickname || guildUser.displayName;
 
         if (mentionedUser.id == ownerId) message.reply("I can't do this to an owner!");
 
-        guildUser.setNickname(guildUser.nickname + " [beaned]");
+        guildUser.setNickname(`${originUsername} [beaned]`);
         ifunny({ shuffle: false }, (err, res) => {
             guildUser.createDM().then(dm => {
                 dm.send(res[Math.floor(Math.random() * res.length)].src)
