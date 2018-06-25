@@ -15,10 +15,11 @@ let cmd = {
 
         if (mentionedUser.id == ownerId) message.reply("I can't do this to an owner!");
 
-        guildUser.setNickname(mentionedUser.username + " [beaned]");
+        guildUser.setNickname(mentionedUser.nickname + " [beaned]");
         ifunny({ shuffle: false }, (err, res) => {
             guildUser.createDM().then(dm => {
                 dm.send(res[Math.floor(Math.random() * res.length)].src)
+                message.reply("User has been beaned!");
             });
         });
     },
