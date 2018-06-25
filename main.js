@@ -30,6 +30,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
+    if (msg.channel.type == 'dm') return;
     commandHandler.handle(msg);
 });
 

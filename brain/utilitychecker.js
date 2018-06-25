@@ -18,6 +18,13 @@ let utilitychecker = {
             return r.id == roleid
         });
         return role;
+    },
+    isEmpty: obj => {
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
     }
 }
 
