@@ -75,7 +75,7 @@ client.on('raw', async event => {
 });
 
 client.on('messageReactionAdd', (msg, user) => {
-    if (user.id = 455827368586772507) return;
+    if (user.id == 455827368586772507) return;
     switch (msg._emoji.name) {
         case 'optin':
             reactionManager.addnewmembertooptin(msg, user);
@@ -84,7 +84,7 @@ client.on('messageReactionAdd', (msg, user) => {
 });
 
 client.on('messageReactionRemove', (msg, user) => {
-    if (user.id = 455827368586772507) return;
+    if (user.id == 455827368586772507) return;
     switch (msg._emoji.name) {
         case 'optin':
             reactionManager.removememberfromoptin(msg, user);
