@@ -25,6 +25,18 @@ let utilitychecker = {
                 return false;
         }
         return true;
+    },
+    trueRandom: arr => {
+        function getRandomItem() {
+            let rand = "";
+            do {
+                rand = arr[Math.floor(Math.random() * arr.length)];
+            }
+            while (rand == global.LastRandomItem);
+            global.LastRandomItem = rand;
+            return rand;
+        }
+        return getRandomItem();
     }
 }
 

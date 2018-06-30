@@ -2,7 +2,7 @@ const util = require('../brain/utilitychecker');
 
 let cmd = {
     exec: (message, args) => {
-        let greetings = ['hello', 'hi', 'aloha', 'g\'day', 'tomat shall return'];
+        let greetings = ['goodbye', 'be gone', 'cya', 'farewell', 'bye noob', 'see ya later'];
 
         if (message.mentions.users.size != 0) {
             let mentionedUser = message.mentions.users.first();
@@ -18,9 +18,9 @@ let cmd = {
     },
     meta: () => {
         return {
-            "name": "Hello",
-            "desc": "Says 'hello'",
-            "aliases": ["greet"],
+            "name": "Goodbye",
+            "desc": "Says 'goodbye'",
+            "aliases": ["goodbye"],
             "adminonly": false
         }
     }
