@@ -4,8 +4,14 @@ const sqlApi = require('./sqlApi');
 const util = require('./utilitychecker');
 
 let reactionmanager = {
-    refillglobaloptinmessages: () => {
-
+    refillglobaloptinmessages: async() => {
+        let res = await sqlApi.get(`SELECT * FROM rankoptin`);
+        res.forEach(v => {
+            global.optinmessages.push({
+                mid: v.messageID,
+                rid: v.roleID
+            });
+        });
     },
     addnewmembertooptin: async(msg, user) => {
         let filteredOutRole = global.optinmessages.filter(v => v.mid == msg.message.id);
