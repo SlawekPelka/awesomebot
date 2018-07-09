@@ -5,11 +5,12 @@ const util = require('./utilitychecker');
 
 let reactionmanager = {
     refillglobaloptinmessages: async() => {
-        let res = await sqlApi.get(`SELECT * FROM rankoptin`);
-        res.forEach(v => {
-            global.optinmessages.push({
-                mid: v.messageID,
-                rid: v.roleID
+        sqlApi.get(`SELECT * from rankoptin`).then(res => {
+            res.forEach((v, i) => {
+                global.optinmessages.push([
+                    v.messageID,
+                    v.rankID
+                ]);
             });
         });
     },
