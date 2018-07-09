@@ -1,11 +1,8 @@
 let utilitychecker = {
     checkifroleexists: (guild, role) => {
         let roles = guild.roles.array();
-        let serverrolearray = [];
-        for (let x = 0; x < roles.length; x++) {
-            serverrolearray.push(roles[x].name.toLowerCase());
-        }
-        return (serverrolearray.includes(role.toLowerCase())) ? true : false;
+        let foundrole = roles.filter(v => v.name.toLowerCase() == role.toLowerCase());
+        return (foundrole.length != 0) ? foundrole : false;
     },
     getroleid: (guild, role) => {
         let roles = guild.roles.array().filter(r => {

@@ -5,38 +5,49 @@ const util = require('./utilitychecker');
 
 let reactionmanager = {
     refillglobaloptinmessages: () => {
-        sqlApi.get(`SELECT * from rankoptin`).then(res => {
-            res.forEach((v, i) => {
-                global.optinmessages.push([
-                    v.messageID,
-                    v.rankID
-                ]);
-            });
-        });
-    },
-    addnewmembertooptin: (msg, user) => {
-        let filtered;
-        for (let x = 0; x < global.optinmessages.length; x++) {
-            if (global.optinmessages[x][0] == msg.message.id) filtered = global.optinmessages[x];
-        }
 
-        sqlApi.get(`SELECT * FROM rankoptin WHERE rankID = ${filtered[1]}`).then(res => {
+    },
+    addnewmembertooptin: async(msg, user) => {
+        let filteredOutRole = global.optinmessages.filter(v => v.mid == msg.message.id);
+        let gmember = await msg.message.guild.fetchMember(user);
+
+        gmember.addRole(util.getrolebyid(filteredOutRole[0].rid, msg.message.guild)[0]);
+        sqlApi.query(`INSERT INTO rankoptinpeople (roleID, userID, messageID) VALUES (${filteredOutRole[0].rid}, ${gmember.id}, ${filteredOutRole[0].mid})`);
+    },
+    addnewroletodatabase: async(messageID, guildID, authorID) => {
+        let filteredOutRole = global.optinmessages.filter(v => v.mid == messageID);
+        let res = await sqlApi.get(`SELECT * FROM rankoptin WHERE rankID = ${filteredOutRole[0].rid}`);
+
+        if (res.length == 0)
+            sqlApi.query(`INSERT INTO rankoptin (rankID, serverID, messageID) VALUES (${filteredOutRole[0].rid},  ${guildID}, ${filteredOutRole[0].mid})`);
+    },
+    removememberfromoptin: async(msg, user) => {
+        let res = await sqlApi.get(`SELECT roleID FROM rankoptinpeople WHERE messageID = ${msg.message.id}`);
+
+        let gmember = await msg.message.guild.fetchMember(user);
+        gmember.removeRole(util.getrolebyid(res[0].roleID, msg.message.guild)[0]);
+
+        sqlApi.query(`DELETE FROM rankoptinpeople WHERE messageID = ${msg.message.id}`);
+    },
+    uprespectsofmessage: msg => {
+        let currentContent = msg.message.content;
+        let currentReactionCount = msg.message.reactions.first().count - 1;
+
+        sqlApi.get(`SELECT * FROM respects WHERE messageID = ${msg.message.id}`).then(res => {
             if (res.length == 0) {
-                sqlApi.query(`INSERT INTO rankoptinpeople (roleID, userID, messageID) VALUES (${filtered[1]}, ${user.id}, ${msg.message.id})`);
+                sqlApi.query(`INSERT INTO respects (messageID, respectCount) VALUES (${msg.message.id}, ${currentReactionCount})`);
+            } else {
+                sqlApi.query(`UPDATE respects SET respectCount = ${currentReactionCount} WHERE messageID = ${msg.message.id}`);
             }
-
-            let gmember = msg.message.guild.fetchMember(user).then(memb => {
-                memb.addRole(util.getrolebyid(filtered[1], msg.message.guild)[0]);
-            });
+            msg.message.edit(currentContent.replace(/\d+/g, currentReactionCount));
         });
     },
-    removememberfromoptin: (msg, user) => {
-        sqlApi.get(`SELECT roleID FROM rankoptinpeople WHERE messageID = ${msg.message.id}`).then(result => {
-            let gmember = msg.message.guild.fetchMember(user).then(memb => {
-                memb.removeRole(util.getrolebyid(result[0].roleID, msg.message.guild)[0]);
-            });
-            sqlApi.query(`DELETE FROM rankoptinpeople WHERE messageID = ${msg.message.id}`);
-        });
+    downrespectsofmessage: msg => {
+        let currentContent = msg.message.content;
+        let currentReactionCount = msg.message.reactions.first().count - 1;
+
+        sqlApi.query(`UPDATE respects SET respectCount = ${currentReactionCount} WHERE messageID = ${msg.message.id}`);
+        msg.message.edit(currentContent.replace(/\d+/g, currentReactionCount));
     }
 }
 

@@ -9,9 +9,12 @@
     "author": "slawekpelka",
     "license": "ISC",
     "dependencies": {
+        "canvas": "^2.0.0-alpha.12",
         "discord.js": "^11.3.2",
         "ifunny-web-api": "^1.0.0",
+        "imgur-search": "^1.0.1",
         "mysql": "^2.15.0",
-        "nodemon": "^1.17.4"
+        "nodemon": "^1.17.4",
+        "request": "^2.87.0"
     }
 }

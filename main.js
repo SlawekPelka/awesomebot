@@ -80,6 +80,9 @@ client.on('messageReactionAdd', (msg, user) => {
         case 'optin':
             reactionManager.addnewmembertooptin(msg, user);
             break;
+        case 'pressf':
+            reactionManager.uprespectsofmessage(msg);
+            break;
     }
 });
 
@@ -88,6 +91,9 @@ client.on('messageReactionRemove', (msg, user) => {
     switch (msg._emoji.name) {
         case 'optin':
             reactionManager.removememberfromoptin(msg, user);
+            break;
+        case 'pressf':
+            reactionManager.downrespectsofmessage(msg);
             break;
     }
 });

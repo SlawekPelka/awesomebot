@@ -1,4 +1,5 @@
 const util = require('../brain/utilitychecker');
+const reactionManager = require('../brain/reactionManager');
 
 let cmd = {
     exec: (message, args) => {
@@ -11,7 +12,9 @@ let cmd = {
             return;
         }
 
-        if (!util.checkifroleexists(message.guild, rolename)) {
+        let getExistingRole = util.checkifroleexists(message.guild, rolename);
+
+        if (!getExistingRole) {
             message.guild.createRole({
                 name: rolename
             });
@@ -20,11 +23,12 @@ let cmd = {
             sendMessage();
         }
 
+
         function sendMessage() {
             let optinmoji = global.mainserver.emojis.find('name', 'optin');
 
             const embed = {
-                color: 4484275,
+                color: getExistingRole[0].color,
                 author: {
                     name: `Opt-in for role: ${rolename}`
                 },
@@ -39,10 +43,11 @@ let cmd = {
                 ]
             }
             message.channel.send({ embed }).then(msg => {
-                global.optinmessages.push([
-                    msg.id,
-                    util.getroleid(message.guild, rolename)
-                ]);
+                global.optinmessages.push({
+                    mid: msg.id,
+                    rid: util.getroleid(message.guild, rolename)
+                });
+                reactionManager.addnewroletodatabase(msg.id, msg.guild.id, msg.author.id);
                 msg.react(optinmoji);
             });
         }
