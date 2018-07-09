@@ -7,10 +7,10 @@ let reactionmanager = {
     refillglobaloptinmessages: async() => {
         sqlApi.get(`SELECT * from rankoptin`).then(res => {
             res.forEach((v, i) => {
-                global.optinmessages.push([
-                    v.messageID,
-                    v.rankID
-                ]);
+                global.optinmessages.push({
+                    mid: v.messageID,
+                    rid: v.rankID
+                });
             });
         });
     },
