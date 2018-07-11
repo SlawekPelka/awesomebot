@@ -32,7 +32,9 @@ let reactionmanager = {
         let res = await sqlApi.get(`SELECT roleID FROM rankoptinpeople WHERE messageID = ${msg.message.id}`);
 
         let gmember = await msg.message.guild.fetchMember(user);
-        gmember.removeRole(util.getrolebyid(res[0].roleID, msg.message.guild)[0]);
+        console.log(res);
+        let roleidtosearch = res[0].roleID || res.roleID;
+        gmember.removeRole(util.getrolebyid(roleidtosearch, msg.message.guild)[0]);
 
         sqlApi.query(`DELETE FROM rankoptinpeople WHERE messageID = ${msg.message.id}`);
     },
