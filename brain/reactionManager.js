@@ -29,7 +29,7 @@ let reactionmanager = {
             sqlApi.query(`INSERT INTO rankoptin (rankID, serverID, messageID) VALUES (${filteredOutRole[0].rid},  ${guildID}, ${filteredOutRole[0].mid})`);
     },
     removememberfromoptin: async(msg, user) => {
-        let res = await sqlApi.get(`SELECT roleID FROM rankoptinpeople WHERE messageID = ${msg.message.id}`);
+        let res = await sqlApi.get(`SELECT rankID FROM rankoptin WHERE messageID = ${msg.message.id}`);
 
         let gmember = await msg.message.guild.fetchMember(user);
         console.log(res);
