@@ -28,7 +28,7 @@ let cmd = {
             let optinmoji = global.mainserver.emojis.find('name', 'optin');
 
             const embed = {
-                color: getExistingRole[0].color,
+                color: getExistingRole[0].color || 15527148,
                 author: {
                     name: `Opt-in for role: ${rolename}`
                 },
