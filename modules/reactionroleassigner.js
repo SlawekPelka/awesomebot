@@ -7,7 +7,7 @@ let cmd = {
         let rolename = args.join(' ');
         let whitespaceTest = new RegExp(/\s+/g);
 
-        if (whitespaceTest.test(rolename) || rolename == '') {
+        if (rolename.replace(/\s/g, '').length == 0 || rolename == '') {
             message.reply("You need to specify the role!");
             return;
         }
